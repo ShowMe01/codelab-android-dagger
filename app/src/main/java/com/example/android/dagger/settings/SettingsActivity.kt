@@ -18,18 +18,26 @@ package com.example.android.dagger.settings
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.ViewModelProvider
 import com.example.android.dagger.MyApplication
 import com.example.android.dagger.R
+import com.example.android.dagger.di.ViewModelFactory
 import com.example.android.dagger.login.LoginActivity
 import javax.inject.Inject
 
 class SettingsActivity : AppCompatActivity() {
 
-    // @Inject annotated fields will be provided by Dagger
     @Inject
-    lateinit var settingsViewModel: SettingsViewModel
+    lateinit var viewModelFactory: ViewModelFactory
+
+    private val settingsViewModel: SettingsViewModel by lazy {
+        Log.d("testDagger", "SettingsActivity viewModelFactory:${viewModelFactory} ")
+
+        ViewModelProvider(this, viewModelFactory).get(SettingsViewModel::class.java)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
 

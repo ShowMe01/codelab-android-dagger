@@ -18,6 +18,7 @@ package com.example.android.dagger.main
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.widget.Button
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
@@ -35,6 +36,8 @@ class MainActivity : AppCompatActivity() {
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
     private val mainViewModel: MainViewModel by lazy {
+        Log.d("testDagger", "MainActivity viewModelFactory:${viewModelFactory} ")
+
         ViewModelProvider(this, viewModelFactory).get(MainViewModel::class.java)
     }
 
