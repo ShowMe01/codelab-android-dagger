@@ -27,7 +27,9 @@ import android.widget.TextView
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import com.example.android.dagger.R
+import com.example.android.dagger.di.ViewModelFactory
 import com.example.android.dagger.registration.RegistrationActivity
 import com.example.android.dagger.registration.RegistrationViewModel
 import javax.inject.Inject
@@ -45,11 +47,23 @@ class EnterDetailsFragment : Fragment() {
      *
      * @Inject annotated fields will be provided by Dagger
      */
-    @Inject
-    lateinit var registrationViewModel: RegistrationViewModel
 
     @Inject
-    lateinit var enterDetailsViewModel: EnterDetailsViewModel
+    lateinit var viewModelFactory: ViewModelFactory
+
+    private val registrationViewModel: RegistrationViewModel by lazy {
+        ViewModelProvider(
+            requireActivity(),
+            viewModelFactory
+        ).get(RegistrationViewModel::class.java)
+    }
+
+    private val enterDetailsViewModel: EnterDetailsViewModel by lazy {
+        ViewModelProvider(
+            requireActivity(),
+            viewModelFactory
+        ).get(EnterDetailsViewModel::class.java)
+    }
 
     private lateinit var errorTextView: TextView
     private lateinit var usernameEditText: EditText
@@ -70,24 +84,24 @@ class EnterDetailsFragment : Fragment() {
         val view = inflater.inflate(R.layout.fragment_enter_details, container, false)
 
         enterDetailsViewModel.enterDetailsState.observe(
-            viewLifecycleOwner,
-            { state ->
-                when (state) {
-                    is EnterDetailsSuccess -> {
+            viewLifecycleOwner
+        ) { state ->
+            when (state) {
+                is EnterDetailsSuccess -> {
 
-                        val username = usernameEditText.text.toString()
-                        val password = passwordEditText.text.toString()
-                        registrationViewModel.updateUserData(username, password)
+                    val username = usernameEditText.text.toString()
+                    val password = passwordEditText.text.toString()
+                    registrationViewModel.updateUserData(username, password)
 
-                        (activity as RegistrationActivity).onDetailsEntered()
-                    }
-                    is EnterDetailsError -> {
-                        errorTextView.text = state.error
-                        errorTextView.visibility = View.VISIBLE
-                    }
+                    (activity as RegistrationActivity).onDetailsEntered()
+                }
+
+                is EnterDetailsError -> {
+                    errorTextView.text = state.error
+                    errorTextView.visibility = View.VISIBLE
                 }
             }
-        )
+        }
 
         setupViews(view)
         return view
