@@ -25,8 +25,10 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.widget.doOnTextChanged
 import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import com.example.android.dagger.MyApplication
 import com.example.android.dagger.R
+import com.example.android.dagger.di.ViewModelFactory
 import com.example.android.dagger.main.MainActivity
 import com.example.android.dagger.registration.RegistrationActivity
 import javax.inject.Inject
@@ -35,7 +37,11 @@ class LoginActivity : AppCompatActivity() {
 
     // @Inject annotated fields will be provided by Dagger
     @Inject
-    lateinit var loginViewModel: LoginViewModel
+    lateinit var viewModelFactory: ViewModelFactory
+
+    private val loginViewModel: LoginViewModel by lazy {
+        ViewModelProvider(this, viewModelFactory).get(LoginViewModel::class.java)
+    }
 
     private lateinit var errorTextView: TextView
 
@@ -54,6 +60,7 @@ class LoginActivity : AppCompatActivity() {
                     startActivity(Intent(this, MainActivity::class.java))
                     finish()
                 }
+
                 is LoginError -> errorTextView.visibility = View.VISIBLE
             }
         })

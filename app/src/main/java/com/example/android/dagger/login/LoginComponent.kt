@@ -23,7 +23,7 @@ import dagger.Subcomponent
 // Classes annotated with @ActivityScope will have a unique instance in this Component
 @ActivityScope
 // Definition of a Dagger subcomponent
-@Subcomponent
+@Subcomponent(modules = [LoginViewModelModule::class])
 interface LoginComponent {
 
     // Factory to create instances of LoginComponent
